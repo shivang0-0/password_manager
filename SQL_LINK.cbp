@@ -31,7 +31,11 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add directory="../../../../../Program Files (x86)/Dev-Cpp/MinGW64/include" />
 		</Compiler>
+		<Linker>
+			<Add library="../../../../../Program Files (x86)/Dev-Cpp/MinGW64/lib/libmysql.a" />
+		</Linker>
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
