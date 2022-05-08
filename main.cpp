@@ -353,7 +353,7 @@ void encryption(MYSQL* conn)
     mysql_query(conn,"SELECT * FROM saved_passwords");
     res2=mysql_store_result(conn);
     int count1 = mysql_num_fields(res2);
-    for(int x=0;x<counter;x++)
+    for(int x=0; x<counter; x++)
     {
         row2=mysql_fetch_row(res2);
     }
@@ -382,32 +382,39 @@ void display(MYSQL* conn)
             res=mysql_store_result(conn);
             int count=mysql_num_fields(res);
             column=mysql_fetch_field(res);
-            for(int i=1; i<=100; i++)
+            for(int i=1; i<=125; i++)
             {
                 cout<<"=";
             }
             cout<<endl;
             for(int i=0; i<count; i++)
             {
-                cout<<left<<setw(24)<<setfill(' ')<<column->name<<"|";
+                if(i<3)
+                    cout<<left<<setw(24)<<setfill(' ')<<column->name<<"|";
+                else
+                    cout<<left<<setw(50)<<setfill(' ')<<column->name<<"|";
                 column = mysql_fetch_field(res);
             }
             cout<<endl;
             column=mysql_fetch_field(res);
-            for(int i=1; i<=100; i++)
+            for(int i=1; i<=125; i++)
             {
                 cout<<"=";
             }
             cout<<endl;
             while((row=mysql_fetch_row(res)))
             {
+
                 for(int i=0; i<count; i++)
                 {
-                    cout<<left<<setw(24)<<setfill(' ')<<row[i]<<"|";
+                    if(i<3)
+                        cout<<left<<setw(24)<<setfill(' ')<<row[i]<<"|";
+                    else
+                        cout<<left<<setw(50)<<setfill(' ')<<row[i]<<"|";
                 }
                 cout<<endl;
             }
-            for(int i=1; i<=100; i++)
+            for(int i=1; i<=125; i++)
             {
                 cout<<"=";
             }
@@ -417,6 +424,198 @@ void display(MYSQL* conn)
     else
     {
         cout<<"Fetching failed"<<endl;
+    }
+}
+
+void decryption(MYSQL* conn)
+{
+    MYSQL_ROW row;
+    MYSQL_RES* res;
+    int qstate = mysql_query(conn,"SELECT * FROM saved_passwords");
+    res=mysql_store_result(conn);
+    int count = mysql_num_fields(res);
+    if(conn)
+    {
+        if(!qstate)
+        {
+            while((row=mysql_fetch_row(res)))
+            {
+                int size=strlen(row[count-1]);
+                char A[size];
+                char B[size/3];
+                strcpy(A,row[count-1]);
+                int i=0;
+                for (int k = 0; k < size; k += 3)
+                {
+                    if (A[k] == 32 && A[k + 1] == 32 && A[k + 2] == 32)
+                    {
+                        B[i] = 32;
+                    }
+                    else if (A[k] == '-' && A[k + 1] == '.' && A[k + 2] == '-')
+                    {
+                        B[i] = 'a';
+                    }
+                    else if (A[k] == '-' && A[k + 1] == '-' && A[k + 2] == '.')
+                    {
+                        B[i] = 'b';
+                    }
+                    else if (A[k] == ',' && A[k + 1] == '"' && A[k + 2] == ',')
+                    {
+                        B[i] = 'c';
+                    }
+                    else if (A[k] == '-' && A[k + 1] == ',' && A[k + 2] == '-')
+                    {
+                        B[i] = 'd';
+                    }
+                    else if (A[k] == '.' && A[k + 1] == '-' && A[k + 2] == '-')
+                    {
+                        B[i] = 'e';
+                    }
+                    else if (A[k] == '_' && A[k + 1] == '"' && A[k + 2] == '_')
+                    {
+                        B[i] = 'f';
+                    }
+                    else if (A[k] == '-' && A[k + 1] == '"' && A[k + 2] == ',')
+                    {
+                        B[i] = 'g';
+                    }
+                    else if (A[k] == '_' && A[k + 1] == '_' && A[k + 2] == '_')
+                    {
+                        B[i] = 'h';
+                    }
+                    else if (A[k] == '-' && A[k + 1] == '/' && A[k + 2] == '-')
+                    {
+                        B[i] = 'i';
+                    }
+                    else if (A[k] == '-' && A[k + 1] == '#' && A[k + 2] == '-')
+                    {
+                        B[i] = 'j';
+                    }
+                    else if (A[k] == '/' && A[k + 1] == '-' && A[k + 2] == '-')
+                    {
+                        B[i] = 'k';
+                    }
+                    else if (A[k] == '#' && A[k + 1] == '-' && A[k + 2] == '-')
+                    {
+                        B[i] = 'l';
+                    }
+                    else if (A[k] == ',' && A[k + 1] == '_' && A[k + 2] == ',')
+                    {
+                        B[i] = 'm';
+                    }
+                    else if (A[k] == '/' && A[k + 1] == ',' && A[k + 2] == '/')
+                    {
+                        B[i] = 'n';
+                    }
+                    else if (A[k] == '#' && A[k + 1] == ',' && A[k + 2] == '#')
+                    {
+                        B[i] = 'o';
+                    }
+                    else if (A[k] == '/' && A[k + 1] == '/' && A[k + 2] == '/')
+                    {
+                        B[i] = 'p';
+                    }
+                    else if (A[k] == '#' && A[k + 1] == '#' && A[k + 2] == '#')
+                    {
+                        B[i] = 'q';
+                    }
+                    else if (A[k] == '*' && A[k + 1] == '/' && A[k + 2] == '-')
+                    {
+                        B[i] = 'r';
+                    }
+                    else if (A[k] == '*' && A[k + 1] == '*' && A[k + 2] == '*')
+                    {
+                        B[i] = 's';
+                    }
+                    else if (A[k] == '*' && A[k + 1] == ',' && A[k + 2] == '*')
+                    {
+                        B[i] = 't';
+                    }
+                    else if (A[k] == '*' && A[k + 1] == ',' && A[k + 2] == ',')
+                    {
+                        B[i] = 'u';
+                    }
+                    else if (A[k] == '/' && A[k + 1] == '*' && A[k + 2] == '*')
+                    {
+                        B[i] = 'v';
+                    }
+                    else if (A[k] == '#' && A[k + 1] == '*' && A[k + 2] == '*')
+                    {
+                        B[i] = 'w';
+                    }
+                    else if (A[k] == ',' && A[k + 1] == '*' && A[k + 2] == '/')
+                    {
+                        B[i] = 'x';
+                    }
+                    else if (A[k] == '/' && A[k + 1] == '*' && A[k + 2] == '/')
+                    {
+                        B[i] = 'y';
+                    }
+                    else if (A[k] == '#' && A[k + 1] == '*' && A[k + 2] == '#')
+                    {
+                        B[i] = 'z';
+                    }
+                    else if (A[k] == '-' && A[k + 1] == '*' && A[k + 2] == '-')
+                    {
+                        B[i] = '0';
+                    }
+                    else if (A[k] == '+' && A[k + 1] == '*' && A[k + 2] == '*')
+                    {
+                        B[i] = '1';
+                    }
+                    else if (A[k] == '+' && A[k + 1] == '*' && A[k + 2] == '-')
+                    {
+                        B[i] = '2';
+                    }
+                    else if (A[k] == '*' && A[k + 1] == '+' && A[k + 2] == '-')
+                    {
+                        B[i] = '3';
+                    }
+                    else if (A[k] == '-' && A[k + 1] == '+' && A[k + 2] == '-')
+                    {
+                        B[i] = '4';
+                    }
+                    else if (A[k] == '+' && A[k + 1] == '-' && A[k + 2] == '*')
+                    {
+                        B[i] = '5';
+                    }
+                    else if (A[k] == '+' && A[k + 1] == '+' && A[k + 2] == '+')
+                    {
+                        B[i] = '6';
+                    }
+                    else if (A[k] == '<' && A[k + 1] == '<' && A[k + 2] == '<')
+                    {
+                        B[i] = '7';
+                    }
+                    else if (A[k] == '>' && A[k + 1] == '>' && A[k + 2] == '>')
+                    {
+                        B[i] = '8';
+                    }
+                    else if (A[k] == '<' && A[k + 1] == '*' && A[k + 2] == '>')
+                    {
+                        B[i] = '9';
+                    }
+                    else if (A[k] == '\0' && A[k + 1] == '\0' && A[k + 2] == '\n')
+                    {
+                        B[i] = '\n';
+                    }
+                    i++;
+                }
+                string dec_pass(B,size/3);
+                mysql_query(conn,"SELECT * FROM saved_passwords");
+                mysql_store_result(conn);
+                string SITE=row[count-3];
+                stringstream ss;
+                ss<<"UPDATE saved_passwords SET PASSWORD='"+dec_pass+"' WHERE SITE='"+SITE+"'";
+                string query=ss.str();
+                const char* q=query.c_str();
+                int qstate1=mysql_query(conn,q);
+                if(qstate1==0)
+                    cout<<"Decryption successful"<<endl;
+                else
+                    cout<<"Decryption failed"<<endl;
+            }
+        }
     }
 }
 
@@ -441,6 +640,8 @@ int main()
     insertion(conn);
     display(conn);
     insertion(conn);
+    display(conn);
+    decryption(conn);
     display(conn);
     return 0;
 }
