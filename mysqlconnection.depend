@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1651756413 source:c:\users\krish\desktop\mini project sem 2\mysqlconnection\main.cpp
+1652010860 source:c:\users\krish\desktop\mini project sem 2\mysqlconnection\main.cpp
 	<iostream>
 	<windows.h>
 	<C:\Users\krish\Downloads\mysqlheaders\mysql.h>
