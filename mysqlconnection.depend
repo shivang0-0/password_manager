@@ -1,0 +1,31 @@
+# depslib dependency file v1.0
+1651756413 source:c:\users\krish\desktop\mini project sem 2\mysqlconnection\main.cpp
+	<iostream>
+	<windows.h>
+	<C:\Users\krish\Downloads\mysqlheaders\mysql.h>
+	<sstream>
+	<iomanip>
+
+1651677199 c:\users\krish\downloads\mysqlheaders\mysql.h
+	<sys/types.h>
+	<winsock.h>
+	"mysql_com.h"
+	"mysql_time.h"
+	"mysql_version.h"
+	"typelib.h"
+	"my_list.h"
+	"my_alloc.h"
+
+1651677199 c:\users\krish\downloads\mysqlheaders\mysql_com.h
+
+1651677199 c:\users\krish\downloads\mysqlheaders\mysql_time.h
+
+1651677199 c:\users\krish\downloads\mysqlheaders\mysql_version.h
+	<custom_conf.h>
+
+1651677199 c:\users\krish\downloads\mysqlheaders\typelib.h
+
+1651677199 c:\users\krish\downloads\mysqlheaders\my_list.h
+
+1651677199 c:\users\krish\downloads\mysqlheaders\my_alloc.h
+
