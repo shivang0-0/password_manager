@@ -97,8 +97,8 @@ void encryption(MYSQL* conn)
 {
     MYSQL_ROW row;
     MYSQL_RES* res;
-    char A[13];
-    char B[39];
+    char A[size];
+    char B[size*3];
     int qstate = mysql_query(conn,"SELECT * FROM saved_passwords");
     res=mysql_store_result(conn);
     int count = mysql_num_fields(res);
