@@ -1,6 +1,6 @@
 #include <iostream>
 #include <windows.h>
-#include <mysql.h>
+#include <C:\Users\krish\Downloads\mysqlheaders\mysql.h>
 #include <sstream>
 #include <iomanip>
 #include <string.h>
@@ -14,6 +14,7 @@ unsigned int port=3306;
 const char* unixsocket=NULL;
 unsigned long clientflag=0;
 
+void encryption(MYSQL*);
 MYSQL* connectdatabase()
 {
     MYSQL* conn;
@@ -31,8 +32,10 @@ MYSQL* connectdatabase()
     }
 }
 int size;
+static int counter=0;
 void insertion(MYSQL* conn)
 {
+    counter++;
     int qstate = 0;
     string SITE,USERNAME,PASSWORD;
     cout<<"Enter site name: ";
@@ -47,6 +50,7 @@ void insertion(MYSQL* conn)
     string query = ss.str();
     const char* q = query.c_str();
     qstate = mysql_query(conn,q);
+    encryption(conn);
     if(qstate==0)
         cout<<"Record inserted"<<endl;
     else
@@ -107,11 +111,6 @@ void encryption(MYSQL* conn)
             while((row=mysql_fetch_row(res)))
             {
                 strcpy(A,row[count-1]);
-                for (int i = 0; i < size; i++)
-                {
-                    cout<<A[i];
-                }
-                cout<<endl;
                 int i=0;
                 for (int k = 0; k < size*3; k += 3)
                 {
@@ -349,13 +348,15 @@ void encryption(MYSQL* conn)
         }
     }
     string enc_pass(B,size*3);
-    cout<<enc_pass<<endl;
     MYSQL_ROW row2;
     MYSQL_RES* res2;
     mysql_query(conn,"SELECT * FROM saved_passwords");
     res2=mysql_store_result(conn);
     int count1 = mysql_num_fields(res2);
-    row2=mysql_fetch_row(res2);
+    for(int x=0;x<counter;x++)
+    {
+        row2=mysql_fetch_row(res2);
+    }
     string SITE=row2[count1-3];
     stringstream ss;
     ss<<"UPDATE saved_passwords SET PASSWORD='"+enc_pass+"' WHERE SITE='"+SITE+"'";
@@ -418,14 +419,28 @@ void display(MYSQL* conn)
         cout<<"Fetching failed"<<endl;
     }
 }
+
+void reset(MYSQL* conn)
+{
+    stringstream ss;
+    ss<<"DELETE FROM saved_passwords";
+    string query=ss.str();
+    const char* q=query.c_str();
+    mysql_query(conn,q);
+    stringstream ss1;
+    ss1<<"ALTER TABLE saved_passwords AUTO_INCREMENT=11001";
+    query=ss1.str();
+    q=query.c_str();
+    mysql_query(conn,q);
+}
+
 int main()
 {
     MYSQL* conn = connectdatabase();
+    reset(conn);
     insertion(conn);
-    //update(conn);
-    //display(conn);
     display(conn);
-    encryption(conn);
+    insertion(conn);
     display(conn);
     return 0;
 }
