@@ -2,7 +2,8 @@
 #include <windows.h>
 #include <mysql.h>
 #include <sstream>
-#include<iomanip>
+#include <iomanip>
+#include <string.h>
 using namespace std;
 
 const char* hostname="localhost";
@@ -29,7 +30,8 @@ MYSQL* connectdatabase()
         return conn;
     }
 }
-void insertion (MYSQL* conn)
+int size;
+void insertion(MYSQL* conn)
 {
     int qstate = 0;
     string SITE,USERNAME,PASSWORD;
@@ -39,128 +41,81 @@ void insertion (MYSQL* conn)
     cin>>USERNAME;
     cout<<"Enter password: ";
     cin>>PASSWORD;
+    size=PASSWORD.length();
     stringstream ss;
     ss<<"INSERT INTO saved_passwords (SITE, USERNAME, PASSWORD) VALUES ('"+SITE+"','"+USERNAME+"','"+PASSWORD+"')";
     string query = ss.str();
     const char* q = query.c_str();
     qstate = mysql_query(conn,q);
-    if(qstate == 0)
-    {
-        cout<<"Record inserted...~~~ \n";
-    }
+    if(qstate==0)
+        cout<<"Record inserted"<<endl;
     else
-    {
-        cout<<"Failed to insert...~~~ \n";
-    }
+        cout<<"Record insertion failed"<<endl;
 }
-void update (MYSQL* conn)
-{
-    int qstate;
-    string usernamedb,emaildb,passworddb;
-    int ID;
-    cout<<"Enter id to be updated:";
-    cin>>ID;
-    cout<<"Enter new username: ";
-    cin>>usernamedb;
-    cout<<"Enter new email id: ";
-    cin>>emaildb;
-    cout<<"Enter new password: ";
-    cin>>passworddb;
-    stringstream ss;
-    ss<<"UPDATE users SET username='"+usernamedb+"',email='"+emaildb+"',password='"+passworddb+"' WHERE id="<<ID;
-    string query = ss.str();
-    const char* q = query.c_str();
-    qstate = mysql_query(conn,q);
-    if(qstate == 0)
-    {
-        cout<<"Record updated...~~~ \n";
-    }
-    else
-    {
-        cout<<"Failed to update...~~~ \n";
-    }
-}
+
 void del(MYSQL* conn)
 {
-    int qstate;
-    string usernamedb,emaildb,passworddb;
-    int ID;
-    cout<<"Enter id to be deleted:";
-    cin>>ID;
+    int qstate=0;
+    string SITE,PASSWORD;
+    cout<<"Enter site to be deleted:";
+    cin>>SITE;
+    cout<<"Enter password:";
+    cin>>PASSWORD;
     stringstream ss;
-    ss<<"DELETE FROM users WHERE id="<<ID;
-    string query = ss.str();
-    const char* q = query.c_str();
-    qstate = mysql_query(conn,q);
-    if(qstate == 0)
-    {
-        cout<<"Record deleted...~~~ \n";
-    }
+    ss<<"DELETE FROM saved_passwords WHERE SITE='"+SITE+"' AND PASSWORD='"+PASSWORD+"'";
+    string query=ss.str();
+    const char* q=query.c_str();
+    qstate=mysql_query(conn,q);
+    if(qstate==0)
+        cout<<"Record deleted"<<endl;
     else
-    {
-        cout<<"Failed to delete...~~~ \n";
-    }
+        cout<<"Record deletion failed"<<endl;
 }
-void display(MYSQL* conn)
+
+void update(MYSQL* conn)
 {
-    MYSQL_ROW row;
-    MYSQL_RES* res;
-    MYSQL_FIELD* column;
-    if(conn)
-    {
-        int qstate = mysql_query(conn,"SELECT * FROM saved_passwords");
-        if(!qstate)
-        {
-            res=mysql_store_result(conn);
-            int count = mysql_num_fields(res);
-            column = mysql_fetch_field(res);
-            for(int i=1; i<=100; i++)
-                cout<<"=";
-            cout<<endl;
-            for(int i=0; i<count; i++)
-            {
-                cout<<left<<setw(24)<<setfill(' ')<<column->name<<"|";
-                column = mysql_fetch_field(res);
-            }
-            cout<<endl;
-            column = mysql_fetch_field(res);
-            for(int i=1; i<=100; i++)
-                cout<<"=";
-            cout<<endl;
-            while((row=mysql_fetch_row(res)))
-            {
-                for(int i=0; i<count; i++)
-                    cout<<left<<setw(24)<<row[i]<<setfill(' ')<<"|";
-                cout<<endl;
-            }
-            for(int i=1; i<=100; i++)
-                cout<<"=";
-            cout<<endl;
-        }
-    }
+    int qstate=0;
+    string SITE,PASSWORD;
+    cout<<"Enter site name:";
+    cin>>SITE;
+    cout<<"Enter new password:";
+    cin>>PASSWORD;
+    stringstream ss;
+    ss<<"UPDATE saved_passwords SET PASSWORD='"+PASSWORD+"' WHERE SITE='"+SITE+"'";
+    string query=ss.str();
+    const char* q=query.c_str();
+    qstate=mysql_query(conn,q);
+    if(qstate==0)
+        cout<<"Record updated"<<endl;
+    else
+        cout<<"Record updation failed"<<endl;
 }
+
 void encryption(MYSQL* conn)
 {
     MYSQL_ROW row;
     MYSQL_RES* res;
-    char A[13];
-    char B[39];
+    char A[size];
+    char B[size*3];
+    int qstate = mysql_query(conn,"SELECT * FROM saved_passwords");
+    res=mysql_store_result(conn);
+    int count = mysql_num_fields(res);
     if(conn)
     {
-        int qstate = mysql_query(conn,"SELECT * FROM saved_passwords");
         if(!qstate)
         {
-            res=mysql_store_result(conn);
-            int count = mysql_num_fields(res);
             while((row=mysql_fetch_row(res)))
             {
                 strcpy(A,row[count-1]);
-                for(int i=0; i<13; i++)
-                    cout<<A[i];
-                int i=0;
-                for (int k = 0; k < 39; k += 3)
+                for (int i = 0; i < size; i++)
                 {
-                    if(A[i]==32 || A[i]==32)
+                    cout<<A[i];
+                }
+                cout<<endl;
+                int i=0;
+                for (int k = 0; k < size*3; k += 3)
+                {
+                    if(A[i]==32 || A[i]=='\0')
                     {
                         B[k]=32;
                         B[k+1]=32;
@@ -393,17 +348,84 @@ void encryption(MYSQL* conn)
             }
         }
     }
-    for (int i = 0; i < 39; i++)
+    string enc_pass(B,size*3);
+    cout<<enc_pass<<endl;
+    MYSQL_ROW row2;
+    MYSQL_RES* res2;
+    mysql_query(conn,"SELECT * FROM saved_passwords");
+    res2=mysql_store_result(conn);
+    int count1 = mysql_num_fields(res2);
+    row2=mysql_fetch_row(res2);
+    string SITE=row2[count1-3];
+    stringstream ss;
+    ss<<"UPDATE saved_passwords SET PASSWORD='"+enc_pass+"' WHERE SITE='"+SITE+"'";
+    string query=ss.str();
+    const char* q=query.c_str();
+    qstate=mysql_query(conn,q);
+    if(qstate==0)
+        cout<<"Encryption successful"<<endl;
+    else
+        cout<<"Encryption failed"<<endl;
+}
+
+void display(MYSQL* conn)
+{
+    MYSQL_ROW row;
+    MYSQL_RES* res;
+    MYSQL_FIELD* column;
+    if(conn)
     {
-        cout<<B[i];
+        int qstate=mysql_query(conn,"SELECT * FROM saved_passwords");
+        if(!qstate)
+        {
+            res=mysql_store_result(conn);
+            int count=mysql_num_fields(res);
+            column=mysql_fetch_field(res);
+            for(int i=1; i<=100; i++)
+            {
+                cout<<"=";
+            }
+            cout<<endl;
+            for(int i=0; i<count; i++)
+            {
+                cout<<left<<setw(24)<<setfill(' ')<<column->name<<"|";
+                column = mysql_fetch_field(res);
+            }
+            cout<<endl;
+            column=mysql_fetch_field(res);
+            for(int i=1; i<=100; i++)
+            {
+                cout<<"=";
+            }
+            cout<<endl;
+            while((row=mysql_fetch_row(res)))
+            {
+                for(int i=0; i<count; i++)
+                {
+                    cout<<left<<setw(24)<<setfill(' ')<<row[i]<<"|";
+                }
+                cout<<endl;
+            }
+            for(int i=1; i<=100; i++)
+            {
+                cout<<"=";
+            }
+            cout<<endl;
+        }
+    }
+    else
+    {
+        cout<<"Fetching failed"<<endl;
     }
 }
 int main()
 {
     MYSQL* conn = connectdatabase();
-    //insertion(conn);
+    insertion(conn);
     //update(conn);
+    //display(conn);
     display(conn);
     encryption(conn);
+    display(conn);
     return 0;
 }
