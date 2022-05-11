@@ -4,6 +4,8 @@
 #include <sstream>
 #include <iomanip>
 #include <string.h>
+//#include <stdlib.h>
+#include <unistd.h>
 using namespace std;
 
 const char* hostname="localhost";
@@ -15,6 +17,7 @@ const char* unixsocket=NULL;
 unsigned long clientflag=0;
 
 void encryption(MYSQL*);
+void loading();
 MYSQL* connectdatabase()
 {
     MYSQL* conn;
@@ -22,7 +25,14 @@ MYSQL* connectdatabase()
     conn=mysql_real_connect(conn,hostname,username,password,database,port,unixsocket,clientflag);
     if(conn)
     {
-        cout<<"connected"<<endl;
+        loading();
+        char a[]="                    Connection established with table saved_passwords of MYSQL database passwords..";
+        for(int i=0;i<99;i++)
+            {
+                cout<<a[i];
+                usleep(200);
+            }
+        cout<<"\n\n";
         return conn;
     }
     else
@@ -44,6 +54,7 @@ void insertion(MYSQL* conn)
     cin>>USERNAME;
     cout<<"Enter password: ";
     cin>>PASSWORD;
+    cout<<endl;
     size=PASSWORD.length();
     stringstream ss;
     ss<<"INSERT INTO saved_passwords (SITE, USERNAME, PASSWORD) VALUES ('"+SITE+"','"+USERNAME+"','"+PASSWORD+"')";
@@ -94,7 +105,6 @@ void update(MYSQL* conn)
     else
         cout<<"Record updation failed"<<endl;
 }
-
 void encryption(MYSQL* conn)
 {
     MYSQL_ROW row;
@@ -342,6 +352,198 @@ void encryption(MYSQL* conn)
                         B[k + 1] = '\0';
                         B[k + 2] = '\n';
                     }
+                    else if (A[i]=='~')
+                    {
+                        B[k] = 'm';
+                        B[k + 1] = 'c';
+                        B[k + 2] = 'l';
+                    }
+                    else if (A[i]=='`')
+                    {
+                        B[k] = 'm';
+                        B[k + 1] = 'l';
+                        B[k + 2] = 'c';
+                    }
+                    else if (A[i]=='!')
+                    {
+                        B[k] = 'c';
+                        B[k + 1] = 'l';
+                        B[k + 2] = 'm';
+                    }
+                    else if (A[i]=='@')
+                    {
+                        B[k] = 'c';
+                        B[k + 1] = 'm';
+                        B[k + 2] = 'l';
+                    }
+                    else if (A[i]=='#')
+                    {
+                        B[k] = 'l';
+                        B[k + 1] = 'm';
+                        B[k + 2] = 'c';
+                    }
+                    else if (A[i]=='$')
+                    {
+                        B[k] = 'l';
+                        B[k + 1] = 'c';
+                        B[k + 2] = 'm';
+                    }
+                    else if (A[i]=='%')
+                    {
+                        B[k] = 'a';
+                        B[k + 1] = 'e';
+                        B[k + 2] = 'o';
+                    }
+                    else if (A[i]=='^')
+                    {
+                        B[k] = 'a';
+                        B[k + 1] = 'o';
+                        B[k + 2] = 'e';
+                    }
+                    else if (A[i]=='&')
+                    {
+                        B[k] = 'e';
+                        B[k + 1] = 'o';
+                        B[k + 2] = 'a';
+                    }
+                    else if (A[i]=='*')
+                    {
+                        B[k] = 'e';
+                        B[k + 1] = 'a';
+                        B[k + 2] = 'o';
+                    }
+                    else if (A[i]=='(')
+                    {
+                        B[k] = 'o';
+                        B[k + 1] = 'a';
+                        B[k + 2] = 'e';
+                    }
+                    else if (A[i]==')')
+                    {
+                        B[k] = 'i';
+                        B[k + 1] = 's';
+                        B[k + 2] = 'j';
+                    }
+                    else if (A[i]=='_')
+                    {
+                        B[k] = 'i';
+                        B[k + 1] = 'j';
+                        B[k + 2] = 's';
+                    }
+                    else if (A[i]=='-')
+                    {
+                        B[k] = 's';
+                        B[k + 1] = 'j';
+                        B[k + 2] = 'i';
+                    }
+                    else if (A[i]=='+')
+                    {
+                        B[k] = 's';
+                        B[k + 1] = 'i';
+                        B[k + 2] = 'j';
+                    }
+                    else if (A[i]=='=')
+                    {
+                        B[k] = 'j';
+                        B[k + 1] = 'i';
+                        B[k + 2] = 's';
+                    }
+                    else if (A[i]=='{')
+                    {
+                        B[k] = 'j';
+                        B[k + 1] = 's';
+                        B[k + 2] = 'i';
+                    }
+                    else if (A[i]=='[')
+                    {
+                        B[k] = 'z';
+                        B[k + 1] = 'u';
+                        B[k + 2] = 'n';
+                    }
+                    else if (A[i]=='}')
+                    {
+                        B[k] = 'z';
+                        B[k + 1] = 'n';
+                        B[k + 2] = 'u';
+                    }
+                    else if (A[i]==']')
+                    {
+                        B[k] = 'u';
+                        B[k + 1] = 'n';
+                        B[k + 2] = 'z';
+                    }
+                    else if (A[i]=='|')
+                    {
+                        B[k] = 'u';
+                        B[k + 1] = 'z';
+                        B[k + 2] = 'n';
+                    }
+                    else if (A[i]==92)
+                    {
+                        B[k] = 'n';
+                        B[k + 1] = 'z';
+                        B[k + 2] = 'u';
+                    }
+                    else if (A[i]==':')
+                    {
+                        B[k] = 'n';
+                        B[k + 1] = 'u';
+                        B[k + 2] = 'z';
+                    }
+                    else if (A[i]==';')
+                    {
+                        B[k] = 'r';
+                        B[k + 1] = 'f';
+                        B[k + 2] = 't';
+                    }
+                    else if (A[i]==34)
+                    {
+                        B[k] = 'r';
+                        B[k + 1] = 't';
+                        B[k + 2] = 'f';
+                    }
+                    else if (A[i]==39)
+                    {
+                        B[k] = 'f';
+                        B[k + 1] = 't';
+                        B[k + 2] = 'r';
+                    }
+                    else if (A[i]=='<')
+                    {
+                        B[k] = 'f';
+                        B[k + 1] = 'r';
+                        B[k + 2] = 't';
+                    }
+                    else if (A[i]==',')
+                    {
+                        B[k] = 't';
+                        B[k + 1] = 'r';
+                        B[k + 2] = 'f';
+                    }
+                    else if (A[i]=='>')
+                    {
+                        B[k] = 't';
+                        B[k + 1] = 'f';
+                        B[k + 2] = 'r';
+                    }
+                    else if (A[i]=='.')
+                    {
+                        B[k] = 'w';
+                        B[k + 1] = 'p';
+                        B[k + 2] = 'k';
+                    }
+                    else if (A[i]=='?')
+                    {
+                        B[k] = 'w';
+                        B[k + 1] = 'k';
+                        B[k + 2] = 'p';
+                    }
+                    else if (A[i]=='/')
+                    {
+                        B[k] = 'p';
+                        B[k + 1] = 'k';
+                        B[k + 2] = 'w';
+                    }
                     i++;
                 }
             }
@@ -364,13 +566,34 @@ void encryption(MYSQL* conn)
     const char* q=query.c_str();
     qstate=mysql_query(conn,q);
     if(qstate==0)
-        cout<<"Encryption successful"<<endl;
+        {
+            loading();
+            cout<<"Encryption successful"<<endl;
+        }
     else
         cout<<"Encryption failed"<<endl;
 }
-
+class pass
+{
+    string p;
+public:
+    pass()
+    {
+        cout<<"Enter a master password to decrypt your passwords later: ";
+        getline(cin>>ws,p);
+        system("cls");
+    }
+    bool pass_check(string q)
+    {
+        if(p==q)
+            return 1;
+        else
+            return 0;
+    }
+} obj;
 void display(MYSQL* conn)
 {
+    loading();
     MYSQL_ROW row;
     MYSQL_RES* res;
     MYSQL_FIELD* column;
@@ -429,196 +652,345 @@ void display(MYSQL* conn)
 
 void decryption(MYSQL* conn)
 {
-    MYSQL_ROW row;
-    MYSQL_RES* res;
-    int qstate = mysql_query(conn,"SELECT * FROM saved_passwords");
-    res=mysql_store_result(conn);
-    int count = mysql_num_fields(res);
-    if(conn)
+    string q;
+    cout<<"Enter the master password: ";
+    getline(cin>>ws,q);
+    cout<<endl;
+    bool b=obj.pass_check(q);
+    if(b==true)
     {
-        if(!qstate)
+        loading();
+        MYSQL_ROW row;
+        MYSQL_RES* res;
+        int qstate = mysql_query(conn,"SELECT * FROM saved_passwords");
+        res=mysql_store_result(conn);
+        int count = mysql_num_fields(res);
+        if(conn)
         {
-            while((row=mysql_fetch_row(res)))
+            if(!qstate)
             {
-                int size=strlen(row[count-1]);
-                char A[size];
-                char B[size/3];
-                strcpy(A,row[count-1]);
-                int i=0;
-                for (int k = 0; k < size; k += 3)
+                while((row=mysql_fetch_row(res)))
                 {
-                    if (A[k] == 32 && A[k + 1] == 32 && A[k + 2] == 32)
+                    int size=strlen(row[count-1]);
+                    char A[size];
+                    char B[size/3];
+                    strcpy(A,row[count-1]);
+                    int i=0;
+                    for (int k = 0; k < size; k += 3)
                     {
-                        B[i] = 32;
+                        if (A[k] == 32 && A[k + 1] == 32 && A[k + 2] == 32)
+                        {
+                            B[i] = 32;
+                        }
+                        else if (A[k] == '-' && A[k + 1] == '.' && A[k + 2] == '-')
+                        {
+                            B[i] = 'a';
+                        }
+                        else if (A[k] == '-' && A[k + 1] == '-' && A[k + 2] == '.')
+                        {
+                            B[i] = 'b';
+                        }
+                        else if (A[k] == ',' && A[k + 1] == '"' && A[k + 2] == ',')
+                        {
+                            B[i] = 'c';
+                        }
+                        else if (A[k] == '-' && A[k + 1] == ',' && A[k + 2] == '-')
+                        {
+                            B[i] = 'd';
+                        }
+                        else if (A[k] == '.' && A[k + 1] == '-' && A[k + 2] == '-')
+                        {
+                            B[i] = 'e';
+                        }
+                        else if (A[k] == '_' && A[k + 1] == '"' && A[k + 2] == '_')
+                        {
+                            B[i] = 'f';
+                        }
+                        else if (A[k] == '-' && A[k + 1] == '"' && A[k + 2] == ',')
+                        {
+                            B[i] = 'g';
+                        }
+                        else if (A[k] == '_' && A[k + 1] == '_' && A[k + 2] == '_')
+                        {
+                            B[i] = 'h';
+                        }
+                        else if (A[k] == '-' && A[k + 1] == '/' && A[k + 2] == '-')
+                        {
+                            B[i] = 'i';
+                        }
+                        else if (A[k] == '-' && A[k + 1] == '#' && A[k + 2] == '-')
+                        {
+                            B[i] = 'j';
+                        }
+                        else if (A[k] == '/' && A[k + 1] == '-' && A[k + 2] == '-')
+                        {
+                            B[i] = 'k';
+                        }
+                        else if (A[k] == '#' && A[k + 1] == '-' && A[k + 2] == '-')
+                        {
+                            B[i] = 'l';
+                        }
+                        else if (A[k] == ',' && A[k + 1] == '_' && A[k + 2] == ',')
+                        {
+                            B[i] = 'm';
+                        }
+                        else if (A[k] == '/' && A[k + 1] == ',' && A[k + 2] == '/')
+                        {
+                            B[i] = 'n';
+                        }
+                        else if (A[k] == '#' && A[k + 1] == ',' && A[k + 2] == '#')
+                        {
+                            B[i] = 'o';
+                        }
+                        else if (A[k] == '/' && A[k + 1] == '/' && A[k + 2] == '/')
+                        {
+                            B[i] = 'p';
+                        }
+                        else if (A[k] == '#' && A[k + 1] == '#' && A[k + 2] == '#')
+                        {
+                            B[i] = 'q';
+                        }
+                        else if (A[k] == '*' && A[k + 1] == '/' && A[k + 2] == '-')
+                        {
+                            B[i] = 'r';
+                        }
+                        else if (A[k] == '*' && A[k + 1] == '*' && A[k + 2] == '*')
+                        {
+                            B[i] = 's';
+                        }
+                        else if (A[k] == '*' && A[k + 1] == ',' && A[k + 2] == '*')
+                        {
+                            B[i] = 't';
+                        }
+                        else if (A[k] == '*' && A[k + 1] == ',' && A[k + 2] == ',')
+                        {
+                            B[i] = 'u';
+                        }
+                        else if (A[k] == '/' && A[k + 1] == '*' && A[k + 2] == '*')
+                        {
+                            B[i] = 'v';
+                        }
+                        else if (A[k] == '#' && A[k + 1] == '*' && A[k + 2] == '*')
+                        {
+                            B[i] = 'w';
+                        }
+                        else if (A[k] == ',' && A[k + 1] == '*' && A[k + 2] == '/')
+                        {
+                            B[i] = 'x';
+                        }
+                        else if (A[k] == '/' && A[k + 1] == '*' && A[k + 2] == '/')
+                        {
+                            B[i] = 'y';
+                        }
+                        else if (A[k] == '#' && A[k + 1] == '*' && A[k + 2] == '#')
+                        {
+                            B[i] = 'z';
+                        }
+                        else if (A[k] == '-' && A[k + 1] == '*' && A[k + 2] == '-')
+                        {
+                            B[i] = '0';
+                        }
+                        else if (A[k] == '+' && A[k + 1] == '*' && A[k + 2] == '*')
+                        {
+                            B[i] = '1';
+                        }
+                        else if (A[k] == '+' && A[k + 1] == '*' && A[k + 2] == '-')
+                        {
+                            B[i] = '2';
+                        }
+                        else if (A[k] == '*' && A[k + 1] == '+' && A[k + 2] == '-')
+                        {
+                            B[i] = '3';
+                        }
+                        else if (A[k] == '-' && A[k + 1] == '+' && A[k + 2] == '-')
+                        {
+                            B[i] = '4';
+                        }
+                        else if (A[k] == '+' && A[k + 1] == '-' && A[k + 2] == '*')
+                        {
+                            B[i] = '5';
+                        }
+                        else if (A[k] == '+' && A[k + 1] == '+' && A[k + 2] == '+')
+                        {
+                            B[i] = '6';
+                        }
+                        else if (A[k] == '<' && A[k + 1] == '<' && A[k + 2] == '<')
+                        {
+                            B[i] = '7';
+                        }
+                        else if (A[k] == '>' && A[k + 1] == '>' && A[k + 2] == '>')
+                        {
+                            B[i] = '8';
+                        }
+                        else if (A[k] == '<' && A[k + 1] == '*' && A[k + 2] == '>')
+                        {
+                            B[i] = '9';
+                        }
+                        else if (A[k] == '\0' && A[k + 1] == '\0' && A[k + 2] == '\n')
+                        {
+                            B[i] = '\n';
+                        }
+                        else if (A[k] == 'm' && A[k + 1] == 'c' && A[k + 2] == 'l')
+                        {
+                            B[i] = '~';
+                        }
+                        else if (A[k] == 'm' && A[k + 1] == 'l' && A[k + 2] == 'c')
+                        {
+                            B[i] = '`';
+                        }
+                        else if (A[k] == 'c' && A[k + 1] == 'l' && A[k + 2] == 'm')
+                        {
+                            B[i] = '!';
+                        }
+                        else if (A[k] == 'c' && A[k + 1] == 'm' && A[k + 2] == 'l')
+                        {
+                            B[i] = '@';
+                        }
+                        else if (A[k] == 'l' && A[k + 1] == 'm' && A[k + 2] == 'c')
+                        {
+                            B[i] = '#';
+                        }
+                        else if (A[k] == 'l' && A[k + 1] == 'c' && A[k + 2] == 'm')
+                        {
+                            B[i] = '$';
+                        }
+                        else if (A[k] == 'a' && A[k + 1] == 'e' && A[k + 2] == 'o')
+                        {
+                            B[i] = '%';
+                        }
+                        else if (A[k] == 'a' && A[k + 1] == 'o' && A[k + 2] == 'e')
+                        {
+                            B[i] = '^';
+                        }
+                        else if (A[k] == 'e' && A[k + 1] == 'o' && A[k + 2] == 'a')
+                        {
+                            B[i] = '&';
+                        }
+                        else if (A[k] == 'e' && A[k + 1] == 'a' && A[k + 2] == 'o')
+                        {
+                            B[i] = '*';
+                        }
+                        else if (A[k] == 'o' && A[k + 1] == 'a' && A[k + 2] == 'e')
+                        {
+                            B[i] = '(';
+                        }
+                        else if (A[k] == 'i' && A[k + 1] == 's' && A[k + 2] == 'j')
+                        {
+                            B[i] = ')';
+                        }
+                        else if (A[k] == 'i' && A[k + 1] == 'j' && A[k + 2] == 's')
+                        {
+                            B[i] = '_';
+                        }
+                        else if (A[k] == 's' && A[k + 1] == 'j' && A[k + 2] == 'i')
+                        {
+                            B[i] = '-';
+                        }
+                        else if (A[k] == 's' && A[k + 1] == 'i' && A[k + 2] == 'j')
+                        {
+                            B[i] = '+';
+                        }
+                        else if (A[k] == 'j' && A[k + 1] == 'i' && A[k + 2] == 's')
+                        {
+                            B[i] = '=';
+                        }
+                        else if (A[k] == 'j' && A[k + 1] == 's' && A[k + 2] == 'i')
+                        {
+                            B[i] = '{';
+                        }
+                        else if (A[k] == 'z' && A[k + 1] == 'u' && A[k + 2] == 'n')
+                        {
+                            B[i] = '[';
+                        }
+                        else if (A[k] == 'z' && A[k + 1] == 'n' && A[k + 2] == 'u')
+                        {
+                            B[i] = '}';
+                        }
+                        else if (A[k] == 'u' && A[k + 1] == 'n' && A[k + 2] == 'z')
+                        {
+                            B[i] = ']';
+                        }
+                        else if (A[k] == 'u' && A[k + 1] == 'z' && A[k + 2] == 'n')
+                        {
+                            B[i] = '|';
+                        }
+                        else if (A[k] == 'n' && A[k + 1] == 'z' && A[k + 2] == 'u')
+                        {
+                            B[i] = 92;
+                        }
+                        else if (A[k] == 'n' && A[k + 1] == 'u' && A[k + 2] == 'z')
+                        {
+                            B[i] = ':';
+                        }
+                        else if (A[k] == 'r' && A[k + 1] == 'f' && A[k + 2] == 't')
+                        {
+                            B[i] = ';';
+                        }
+                        else if (A[k] == 'r' && A[k + 1] == 't' && A[k + 2] == 'f')
+                        {
+                            B[i] = 34;
+                        }
+                        else if (A[k] == 'f' && A[k + 1] == 't' && A[k + 2] == 'r')
+                        {
+                            B[i] = 39;
+                        }
+                        else if (A[k] == 'f' && A[k + 1] == 'r' && A[k + 2] == 't')
+                        {
+                            B[i] = '<';
+                        }
+                        else if (A[k] == 't' && A[k + 1] == 'r' && A[k + 2] == 'f')
+                        {
+                            B[i] = ',';
+                        }
+                        else if (A[k] == 't' && A[k + 1] == 'f' && A[k + 2] == 'r')
+                        {
+                            B[i] = '>';
+                        }
+                        else if (A[k] == 'w' && A[k + 1] == 'p' && A[k + 2] == 'k')
+                        {
+                            B[i] = '.';
+                        }
+                        else if (A[k] == 'w' && A[k + 1] == 'k' && A[k + 2] == 'p')
+                        {
+                            B[i] = '?';
+                        }
+                        else if (A[k] == 'p' && A[k + 1] == 'k' && A[k + 2] == 'w')
+                        {
+                            B[i] = '/';
+                        }
+                        i++;
                     }
-                    else if (A[k] == '-' && A[k + 1] == '.' && A[k + 2] == '-')
-                    {
-                        B[i] = 'a';
-                    }
-                    else if (A[k] == '-' && A[k + 1] == '-' && A[k + 2] == '.')
-                    {
-                        B[i] = 'b';
-                    }
-                    else if (A[k] == ',' && A[k + 1] == '"' && A[k + 2] == ',')
-                    {
-                        B[i] = 'c';
-                    }
-                    else if (A[k] == '-' && A[k + 1] == ',' && A[k + 2] == '-')
-                    {
-                        B[i] = 'd';
-                    }
-                    else if (A[k] == '.' && A[k + 1] == '-' && A[k + 2] == '-')
-                    {
-                        B[i] = 'e';
-                    }
-                    else if (A[k] == '_' && A[k + 1] == '"' && A[k + 2] == '_')
-                    {
-                        B[i] = 'f';
-                    }
-                    else if (A[k] == '-' && A[k + 1] == '"' && A[k + 2] == ',')
-                    {
-                        B[i] = 'g';
-                    }
-                    else if (A[k] == '_' && A[k + 1] == '_' && A[k + 2] == '_')
-                    {
-                        B[i] = 'h';
-                    }
-                    else if (A[k] == '-' && A[k + 1] == '/' && A[k + 2] == '-')
-                    {
-                        B[i] = 'i';
-                    }
-                    else if (A[k] == '-' && A[k + 1] == '#' && A[k + 2] == '-')
-                    {
-                        B[i] = 'j';
-                    }
-                    else if (A[k] == '/' && A[k + 1] == '-' && A[k + 2] == '-')
-                    {
-                        B[i] = 'k';
-                    }
-                    else if (A[k] == '#' && A[k + 1] == '-' && A[k + 2] == '-')
-                    {
-                        B[i] = 'l';
-                    }
-                    else if (A[k] == ',' && A[k + 1] == '_' && A[k + 2] == ',')
-                    {
-                        B[i] = 'm';
-                    }
-                    else if (A[k] == '/' && A[k + 1] == ',' && A[k + 2] == '/')
-                    {
-                        B[i] = 'n';
-                    }
-                    else if (A[k] == '#' && A[k + 1] == ',' && A[k + 2] == '#')
-                    {
-                        B[i] = 'o';
-                    }
-                    else if (A[k] == '/' && A[k + 1] == '/' && A[k + 2] == '/')
-                    {
-                        B[i] = 'p';
-                    }
-                    else if (A[k] == '#' && A[k + 1] == '#' && A[k + 2] == '#')
-                    {
-                        B[i] = 'q';
-                    }
-                    else if (A[k] == '*' && A[k + 1] == '/' && A[k + 2] == '-')
-                    {
-                        B[i] = 'r';
-                    }
-                    else if (A[k] == '*' && A[k + 1] == '*' && A[k + 2] == '*')
-                    {
-                        B[i] = 's';
-                    }
-                    else if (A[k] == '*' && A[k + 1] == ',' && A[k + 2] == '*')
-                    {
-                        B[i] = 't';
-                    }
-                    else if (A[k] == '*' && A[k + 1] == ',' && A[k + 2] == ',')
-                    {
-                        B[i] = 'u';
-                    }
-                    else if (A[k] == '/' && A[k + 1] == '*' && A[k + 2] == '*')
-                    {
-                        B[i] = 'v';
-                    }
-                    else if (A[k] == '#' && A[k + 1] == '*' && A[k + 2] == '*')
-                    {
-                        B[i] = 'w';
-                    }
-                    else if (A[k] == ',' && A[k + 1] == '*' && A[k + 2] == '/')
-                    {
-                        B[i] = 'x';
-                    }
-                    else if (A[k] == '/' && A[k + 1] == '*' && A[k + 2] == '/')
-                    {
-                        B[i] = 'y';
-                    }
-                    else if (A[k] == '#' && A[k + 1] == '*' && A[k + 2] == '#')
-                    {
-                        B[i] = 'z';
-                    }
-                    else if (A[k] == '-' && A[k + 1] == '*' && A[k + 2] == '-')
-                    {
-                        B[i] = '0';
-                    }
-                    else if (A[k] == '+' && A[k + 1] == '*' && A[k + 2] == '*')
-                    {
-                        B[i] = '1';
-                    }
-                    else if (A[k] == '+' && A[k + 1] == '*' && A[k + 2] == '-')
-                    {
-                        B[i] = '2';
-                    }
-                    else if (A[k] == '*' && A[k + 1] == '+' && A[k + 2] == '-')
-                    {
-                        B[i] = '3';
-                    }
-                    else if (A[k] == '-' && A[k + 1] == '+' && A[k + 2] == '-')
-                    {
-                        B[i] = '4';
-                    }
-                    else if (A[k] == '+' && A[k + 1] == '-' && A[k + 2] == '*')
-                    {
-                        B[i] = '5';
-                    }
-                    else if (A[k] == '+' && A[k + 1] == '+' && A[k + 2] == '+')
-                    {
-                        B[i] = '6';
-                    }
-                    else if (A[k] == '<' && A[k + 1] == '<' && A[k + 2] == '<')
-                    {
-                        B[i] = '7';
-                    }
-                    else if (A[k] == '>' && A[k + 1] == '>' && A[k + 2] == '>')
-                    {
-                        B[i] = '8';
-                    }
-                    else if (A[k] == '<' && A[k + 1] == '*' && A[k + 2] == '>')
-                    {
-                        B[i] = '9';
-                    }
-                    else if (A[k] == '\0' && A[k + 1] == '\0' && A[k + 2] == '\n')
-                    {
-                        B[i] = '\n';
-                    }
-                    i++;
+                    string dec_pass(B,size/3);
+                    mysql_query(conn,"SELECT * FROM saved_passwords");
+                    mysql_store_result(conn);
+                    string SITE=row[count-3];
+                    stringstream ss;
+                    ss<<"UPDATE saved_passwords SET PASSWORD='"+dec_pass+"' WHERE SITE='"+SITE+"'";
+                    string query=ss.str();
+                    const char* q=query.c_str();
+                    int qstate1=mysql_query(conn,q);
+                    if(qstate1==0)
+                        cout<<"Decryption successful"<<endl;
+                    else
+                        cout<<"Decryption failed"<<endl;
                 }
-                string dec_pass(B,size/3);
-                mysql_query(conn,"SELECT * FROM saved_passwords");
-                mysql_store_result(conn);
-                string SITE=row[count-3];
-                stringstream ss;
-                ss<<"UPDATE saved_passwords SET PASSWORD='"+dec_pass+"' WHERE SITE='"+SITE+"'";
-                string query=ss.str();
-                const char* q=query.c_str();
-                int qstate1=mysql_query(conn,q);
-                if(qstate1==0)
-                    cout<<"Decryption successful"<<endl;
-                else
-                    cout<<"Decryption failed"<<endl;
             }
         }
     }
+    else
+    {
+        cout<<"Wrong password!!!";
+    }
 }
-
+void loading()
+{
+    for (int x = 0; x < 125; x++)
+    {
+        printf("%c", 219);
+        usleep(2000);
+    }
+    cout<<endl;
+}
 void reset(MYSQL* conn)
 {
     stringstream ss;
@@ -637,11 +1009,45 @@ int main()
 {
     MYSQL* conn = connectdatabase();
     reset(conn);
-    insertion(conn);
-    display(conn);
-    insertion(conn);
-    display(conn);
-    decryption(conn);
-    display(conn);
+    int ch;
+    while(true)
+    {
+limit:
+        cout<<"\n\nEnter a choice from given table: "<<endl;
+        cout<<"1. Insertion of record"<<endl;
+        cout<<"2. Display of record(s)"<<endl;
+        cout<<"3. Decryption of record"<<endl;
+        cout<<"4. Exit program"<<endl<<endl;
+        cout<<"Your choice: ";
+        cin>>ch;
+        cout<<endl;
+        switch(ch)
+        {
+        case 1:
+        {
+            insertion(conn);
+            break;
+        }
+        case 2:
+        {
+            display(conn);
+            break;
+        }
+        case 3:
+        {
+            decryption(conn);
+            break;
+        }
+        case 4:
+        {
+            exit(0);
+        }
+        default:
+        {
+            cout<<"Enter a valid choice!!!!!"<<endl;
+            goto limit;
+        }
+        }
+    }
     return 0;
 }
