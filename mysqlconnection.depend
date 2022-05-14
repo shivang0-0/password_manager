@@ -1,11 +1,12 @@
 # depslib dependency file v1.0
-1652025530 source:c:\users\krish\desktop\mini project sem 2\mysqlconnection\main.cpp
+1652551219 source:c:\users\krish\desktop\mini project sem 2\mysqlconnection\main.cpp
 	<iostream>
 	<windows.h>
 	<C:\Users\krish\Downloads\mysqlheaders\mysql.h>
 	<sstream>
 	<iomanip>
 	<string.h>
+	<unistd.h>
 
 1651677199 c:\users\krish\downloads\mysqlheaders\mysql.h
 	<sys/types.h>
